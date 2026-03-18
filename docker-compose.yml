@@ -12,14 +12,9 @@ services:
 
   app:
     restart: unless-stopped
-    build: 
-      context: .
-      args:
-        - USER_ID=${USER_ID:-1000}
-        - GROUP_ID=${GROUP_ID:-1000}
+    build: .
     image: notification_service_app
     container_name: notification_service_app
-    user: "${USER_ID:-1000}:${GROUP_ID:-1000}" # Run container as this user
     ports: 
       - '3000:3000'
     volumes:
