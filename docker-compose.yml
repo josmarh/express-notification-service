@@ -1,0 +1,57 @@
+services:
+  redis:
+    restart: unless-stopped
+    image: redis:7-alpine
+    container_name: notification_service_redis
+    ports:
+      - '6380:6379'
+    networks:
+      - notification_service_network
+    volumes:
+      - redis_data:/data 
+
+  app:
+    restart: unless-stopped
+    build: 
+      context: .
+      args:
+        - USER_ID=${USER_ID:-1000}
+        - GROUP_ID=${GROUP_ID:-1000}
+    image: notification_service_app
+    container_name: notification_service_app
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}" # Run container as this user
+    ports: 
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules # Keeps container's node_modules separate
+    env_file:
+      - .env 
+    networks:
+      - notification_service_network
+    depends_on:
+      - redis
+
+  worker:
+    restart: unless-stopped
+    image: notification_service_app
+    container_name: notification_service_worker
+    command: npm run worker
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env 
+    networks:
+      - notification_service_network
+    depends_on:
+      - redis
+      - app
+
+
+networks:
+  notification_service_network:
+    driver: bridge
+
+volumes:
+  redis_data:
