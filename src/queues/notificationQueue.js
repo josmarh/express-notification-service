@@ -1,4 +1,4 @@
-const { Queue, Worker } = require('bullmq')
+const { Queue } = require('bullmq')
 const connection = require('../config/redis')
 
 const notificationQueue = new Queue('notifications', {
