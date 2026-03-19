@@ -1,4 +1,3 @@
-const Joi = require('joi')
 const createTaskService = require('../services/createTaskService');
 
 exports.createTask = async (req, res) => {

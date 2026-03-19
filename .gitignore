@@ -2,3 +2,5 @@ notification-service/.env
 notification-service/node_modules
 task-service/.env
 task-service/node_modules
+auth-service/.env
+auth-service/node_modules

@@ -10,6 +10,23 @@ services:
     volumes:
       - redis_data:/data 
 
+  auth-service:
+    restart: unless-stopped
+    build: ./auth-service
+    image: auth_service
+    container_name: auth_service
+    ports:
+      - '3002:3000'
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules # Keeps container's node_modules separate
+    env_file:
+      - ./auth-service/.env 
+    networks:
+      - notification_service_network
+    depends_on:
+      - notification-service
+
   task-service:
     restart: unless-stopped
     build: ./task-service

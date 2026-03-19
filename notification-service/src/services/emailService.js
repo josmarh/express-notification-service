@@ -19,9 +19,9 @@ async function sendEmail(to, subject, text) {
             text
         })
 
-        console.log('✅ Email sent:', result)
+        console.log('Email sent:', result)
     } catch (error) {
-        console.error('❌ Email error:', error.message)
+        console.error('Email error:', error.message)
         throw error
     }
 }
