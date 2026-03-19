@@ -1,2 +1,4 @@
-.env
-/node_modules
+notification-service/.env
+notification-service/node_modules
+task-service/.env
+task-service/node_modules

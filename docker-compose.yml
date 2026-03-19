@@ -10,18 +10,35 @@ services:
     volumes:
       - redis_data:/data 
 
-  app:
+  task-service:
     restart: unless-stopped
-    build: .
-    image: notification_service_app
-    container_name: notification_service_app
+    build: ./task-service
+    image: task_service
+    container_name: task_service
+    ports:
+      - '3001:3000'
+    volumes:
+      - ./task-service:/app
+      - /app/node_modules # Keeps container's node_modules separate
+    env_file:
+      - ./task-service/.env 
+    networks:
+      - notification_service_network
+    depends_on:
+      - notification-service
+
+  notification-service:
+    restart: unless-stopped
+    build: ./notification-service
+    image: notification_service
+    container_name: notification_service
     ports: 
       - '3000:3000'
     volumes:
-      - .:/app
+      - ./notification-service:/app
       - /app/node_modules # Keeps container's node_modules separate
     env_file:
-      - .env 
+      - ./notification-service/.env 
     networks:
       - notification_service_network
     depends_on:
@@ -29,19 +46,19 @@ services:
 
   worker:
     restart: unless-stopped
-    image: notification_service_app
+    image: notification_service
     container_name: notification_service_worker
     command: npm run worker
     volumes:
-      - .:/app
+      - ./notification-service:/app
       - /app/node_modules
     env_file:
-      - .env 
+      - ./notification-service/.env 
     networks:
       - notification_service_network
     depends_on:
       - redis
-      - app
+      - notification-service
 
 
 networks:
