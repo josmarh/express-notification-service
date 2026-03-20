@@ -1,11 +1,11 @@
 const sendEmail = require('../../services/emailService')
 
 module.exports = async function userRegistered(data) {
-    const { email } = data
+    const { email, data: { name } } = data
 
     await sendEmail(
         email,
-        'Welcome!',
+        `Welcome! ${name}`,
         'Thanks for registering 🎉'
     )
 }
