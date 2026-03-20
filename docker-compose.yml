@@ -26,6 +26,7 @@ services:
       - notification_service_network
     depends_on:
       - notification-service
+      - database
 
   task-service:
     restart: unless-stopped
@@ -43,6 +44,7 @@ services:
       - notification_service_network
     depends_on:
       - notification-service
+      - database
 
   notification-service:
     restart: unless-stopped
@@ -77,6 +79,20 @@ services:
       - redis
       - notification-service
 
+  database:
+    restart: unless-stopped
+    image: postgres:15-alpine
+    container_name: notification_service_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notification_service_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - notification_service_network
 
 networks:
   notification_service_network:
@@ -84,3 +100,4 @@ networks:
 
 volumes:
   redis_data:
+  db_data:
